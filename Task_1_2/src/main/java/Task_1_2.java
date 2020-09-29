@@ -12,15 +12,23 @@ public class Task_1_2 {
         String inputFileName = consoleReader.readLine();
         System.out.print("Введите подстроку: ");
         String subString = consoleReader.readLine();
+        // пример обработки файла
+        InputStream in = new FileInputStream(inputFileName);
+        System.out.println("Вхождения: " + (searchString(in, subString)).toString());
+    }
 
-        // открытие файла
-        BufferedReader fileReader = Files.newBufferedReader(Path.of(inputFileName), StandardCharsets.UTF_8);
 
-        /* Чтение файла
-        * Чтение производится чанками по chunkSize символов. Предполагается, что длина подстроки << chunkSize.
-        * Поиск подстроки производится отдельно в каждом чанке, а так же в конкатенации двух соседних чанков.
-        * Второе делается в предположении, что подстрока может лежать на пересечении чанков.
-        * */
+    /**
+     * @param in Входной поток
+     * @param subString Подстрока для поиска
+     * @return ArrayList вхождений подстроки
+     */
+    /* Чтение производится чанками по chunkSize символов. Предполагается, что длина подстроки << chunkSize.
+     * Поиск подстроки производится отдельно в каждом чанке, а так же в конкатенации двух соседних чанков.
+     * Второе делается в предположении, что подстрока может лежать на пересечении чанков.
+     */
+    public static ArrayList<Long> searchString(InputStream in, String subString) throws IOException {
+        InputStreamReader fileReader = new InputStreamReader(in);
         int bytesRead;
         int chunksNum = 0;
         String s;
@@ -43,8 +51,8 @@ public class Task_1_2 {
             charsRead += bytesRead;
             rightChunkIdx++;
         }
-        System.out.println("Chunks: " + chunksNum + "\nChars: " + charsRead);
-        System.out.print("Вхождения: " + res.toString());
+        //System.out.println("Chunks: " + chunksNum + "\nChars: " + charsRead);
         fileReader.close();
+        return res;
     }
 }
