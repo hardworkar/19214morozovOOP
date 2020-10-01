@@ -18,9 +18,10 @@ public class Task_1_2Test {
         for (long i : _answer1) {
             answer1.add(i);
         }
-        InputStream in = new ByteArrayInputStream(str1.getBytes());
-        Assert.assertEquals(Task_1_2.searchString(in, "text"), answer1);
-        in.close();
+
+        try(InputStream in = new ByteArrayInputStream(str1.getBytes())) {
+            Assert.assertEquals(Task_1_2.searchString(in, "text"), answer1);
+        }
 
         String str2 = "тттттттттт";
         ArrayList<Long> answer2 = new ArrayList<>();
@@ -28,9 +29,9 @@ public class Task_1_2Test {
         for (long i : _answer2) {
             answer2.add(i);
         }
-        in = new ByteArrayInputStream(str2.getBytes());
-        Assert.assertEquals(Task_1_2.searchString(in, "т"), answer2);
-        in.close();
+        try(InputStream in = new ByteArrayInputStream(str2.getBytes())){
+            Assert.assertEquals(Task_1_2.searchString(in, "т"), answer2);
+        }
 
         String str3 = "異體字體字異";
         ArrayList<Long> answer3 = new ArrayList<>();
@@ -38,8 +39,8 @@ public class Task_1_2Test {
         for (long i : _answer3) {
             answer3.add(i);
         }
-        in = new ByteArrayInputStream(str3.getBytes());
-        Assert.assertEquals(Task_1_2.searchString(in, "異"), answer3);
-        in.close();
+        try(InputStream in = new ByteArrayInputStream(str3.getBytes())) {
+            Assert.assertEquals(Task_1_2.searchString(in, "異"), answer3);
+        }
     }
 }
