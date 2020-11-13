@@ -28,12 +28,20 @@ public class Geometry {
         }
     }
     static class Rectangle extends GeometryObject {
-        private final Point2D leftDown;
-        private final Point2D rightUp;
+        public final Point2D leftDown;
+        public final Point2D rightUp;
         public Rectangle(Point2D leftDown, Point2D rightUp) {
-            center = rightUp.add(leftDown).scale(0.5);
-            this.leftDown = leftDown;
-            this.rightUp = rightUp;
+            if(leftDown.lessThan(rightUp)) {
+                /* случай когда нам передали точки по-человечески */
+                this.leftDown = leftDown;
+                this.rightUp = rightUp;
+            }
+            else {
+                /* случай когда не по-человечески */
+                this.leftDown = rightUp;
+                this.rightUp = leftDown;
+            }
+            center = this.rightUp.add(this.leftDown).scale(0.5);
         }
         public boolean contains(Rectangle b) {
             return (this.leftDown.lessThan(b.leftDown) && this.rightUp.greaterThan(b.rightUp));
@@ -55,13 +63,10 @@ public class Geometry {
     }
     static class Square extends GeometryObject {
         protected Point2D leftDown, rightUp, left, right, up, down;
-        Square(Point2D leftDown, Point2D rightUp) {
-            if(rightUp.x - leftDown.x != rightUp.y - leftDown.y) {
-                throw new IllegalArgumentException("Квадрату хотелось бы иметь равные стороны");
-            }
-            center = rightUp.add(leftDown).scale(0.5);
+        Square(Point2D leftDown, double width) {
             this.leftDown = leftDown;
-            this.rightUp = rightUp;
+            this.rightUp = this.leftDown.add(new Point2D(width, width));
+            this.center = this.leftDown.add(new Point2D(width/2.0, width/2.0));
             this.down = new Point2D(center.x, leftDown.y);
             this.up = new Point2D(center.x, rightUp.y);
             this.left = new Point2D(leftDown.x, center.y);

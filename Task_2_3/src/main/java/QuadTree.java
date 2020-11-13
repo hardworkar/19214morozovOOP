@@ -12,11 +12,11 @@ public class QuadTree implements Iterable<Geometry.GeometryObject> {
         private final LinkedList<Geometry.GeometryObject> objects;
 
         /* constructor for root node */
-        private TreeNode(Point2D leftDown, Point2D rightUp) {
+        private TreeNode() {
             parent = null;
             children = null;
             objects = new LinkedList<>();
-            square = new Geometry.Square(leftDown, rightUp);
+            this.square = new Geometry.Square(new Point2D(-Double.MAX_VALUE / 2.0, -Double.MAX_VALUE / 2.0), Double.MAX_VALUE);
         }
         /* default constructor */
         private TreeNode(TreeNode parent, int childIdx) {
@@ -27,21 +27,15 @@ public class QuadTree implements Iterable<Geometry.GeometryObject> {
         }
         /* создает сабквадрат из квадрата текущей ноды на основе childIdx */
         private Geometry.Square createSubSquare(int childIdx) {
-            switch (childIdx) {
-                case 0 -> {
-                    return new Geometry.Square(square.leftDown, square.center);
-                }
-                case 1 -> {
-                    return new Geometry.Square(square.left, square.up);
-                }
-                case 2 -> {
-                    return new Geometry.Square(square.down, square.right);
-                }
-                case 3 -> {
-                    return new Geometry.Square(square.center, square.rightUp);
-                }
-                default -> throw new IllegalStateException("Unexpected value: " + childIdx);
+            Point2D corner = new Point2D(this.square.leftDown.x, this.square.leftDown.y);
+            double len = (square.right.x-square.left.x)/2.0;
+            if((childIdx & 1) == 1){
+                corner.y += len;
             }
+            if(((childIdx >>> 1) & 1) == 1) {
+                corner.x += len;
+            }
+            return new Geometry.Square(corner, len);
         }
         private boolean isEmpty() {
             if(!objects.isEmpty()) {
@@ -63,8 +57,8 @@ public class QuadTree implements Iterable<Geometry.GeometryObject> {
     /**
      * default constructor for tree, use 2 points for setting tree size
      * */
-    public QuadTree(Point2D leftDown, Point2D rightUp) {
-        root = new TreeNode(leftDown, rightUp);
+    public QuadTree() {
+        root = new TreeNode();
     }
     /** общая схема индексации потомков
      * 1 | 3
@@ -72,21 +66,25 @@ public class QuadTree implements Iterable<Geometry.GeometryObject> {
      * 0 | 2
      **/
     private int getChildIdx(TreeNode node, Point2D point) {
+        final byte RIGHT_UP_SQ = 3;
+        final byte RIGHT_DOWN_SQ = 2;
+        final byte LEFT_UP_SQ = 1;
+        final byte LEFT_DOWN_SQ = 0;
         int idx;
         if(point.x >= node.square.center.x) {
             if(point.y >= node.square.center.y) {
-                idx = 3;
+                idx = RIGHT_UP_SQ;
             }
             else {
-                idx = 2;
+                idx = RIGHT_DOWN_SQ;
             }
         }
         else {
             if(point.y >= node.square.center.y) {
-                idx = 1;
+                idx = LEFT_UP_SQ;
             }
             else {
-                idx = 0;
+                idx = LEFT_DOWN_SQ;
             }
         }
         return idx;
@@ -103,9 +101,6 @@ public class QuadTree implements Iterable<Geometry.GeometryObject> {
             /* если не смогли вместить фигуру в подходящий сабквадрат -> вставляем в текущую ноду */
             if(currentNode.square.contains(bound)) {
                 currentNode.objects.add(obj);
-            }
-            else {
-                throw new IllegalArgumentException("Объект не входит в дерево");
             }
             /* просто дебажный принтф */
             //System.out.println("Inserted " + obj.toString() + " into square: " + currentNode.square.leftDown.toString() + "^" + currentNode.square.rightUp.toString());

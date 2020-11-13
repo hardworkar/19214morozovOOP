@@ -8,7 +8,7 @@ public class QuadTreeTest {
     /* testing mostly add and get-by-point methods */
     @Test
     public void addObject() {
-        QuadTree myTree = new QuadTree(new Point2D(-100,-100), new Point2D(100,100));
+        QuadTree myTree = new QuadTree();
         Geometry.Sphere[] spheres = new Geometry.Sphere[3];
         spheres[0] = new Geometry.Sphere(new Point2D(10,10), 5);
         spheres[1] = new Geometry.Sphere(new Point2D(15,15), 10);
@@ -22,7 +22,7 @@ public class QuadTreeTest {
     /* testing mostly get-by-rectangle method */
     @Test
     public void getObjects() {
-        QuadTree tree = new QuadTree(new Point2D(-100, -100), new Point2D(+100, +100));
+        QuadTree tree = new QuadTree();
         Geometry.Sphere[] spheres = new Geometry.Sphere[3];
         spheres[0] = new Geometry.Sphere(new Point2D(10,10), 5);
         spheres[1] = new Geometry.Sphere(new Point2D(75,75), 10);
@@ -47,7 +47,7 @@ public class QuadTreeTest {
 
     @Test
     public void deleteObject() {
-        QuadTree tree = new QuadTree(new Point2D(-100, -100), new Point2D(+100, +100));
+        QuadTree tree = new QuadTree();
         Geometry.Sphere[] spheres = new Geometry.Sphere[3];
         spheres[0] = new Geometry.Sphere(new Point2D(10,10), 5);
         spheres[1] = new Geometry.Sphere(new Point2D(75,75), 10);
@@ -61,21 +61,15 @@ public class QuadTreeTest {
         assertEquals(res.get(0).toString(), spheres[1].toString());
         assertEquals(1, res.size());
     }
-    @Test(expected = IllegalArgumentException.class)
-    public void hugeObject() {
-        QuadTree tree = new QuadTree(new Point2D(-100, -100), new Point2D(+100, +100));
-        Geometry.Sphere sphere = new Geometry.Sphere(new Point2D(100,100), 5);
-        tree.addObject(sphere);
-    }
     @Test(expected = IllegalStateException.class)
     public void unlistedObject() {
-        QuadTree tree = new QuadTree(new Point2D(-100, -100), new Point2D(+100, +100));
+        QuadTree tree = new QuadTree();
         Geometry.Sphere sphere = new Geometry.Sphere(new Point2D(0,0), 5);
         tree.deleteObject(sphere);
     }
     @Test
     public void streamForFun(){
-        QuadTree tree = new QuadTree(new Point2D(-100, -100), new Point2D(+100, +100));
+        QuadTree tree = new QuadTree();
         Geometry.Sphere[] spheres = new Geometry.Sphere[3];
         spheres[0] = new Geometry.Sphere(new Point2D(10,10), 5);
         spheres[1] = new Geometry.Sphere(new Point2D(75,75), 10);

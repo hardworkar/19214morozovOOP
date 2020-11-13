@@ -1,7 +1,6 @@
 public class Task_2_3 {
     public static void main(String[] args) {
-        QuadTree tree = new QuadTree(new Point2D(-100, -100),
-                                     new Point2D(+100, +100));
+        QuadTree tree = new QuadTree();
         tree.addObject(new Geometry.Sphere(new Point2D(10,10), 5));                     // (0.0;0.0)^(25.0;25.0)
         Geometry.GeometryObject bigSphere = new Geometry.Sphere(new Point2D(0,0), 50);
         tree.addObject(bigSphere);                                                                  // (-100.0;-100.0)^(100.0;100.0)
