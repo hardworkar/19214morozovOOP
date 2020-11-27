@@ -1,3 +1,5 @@
+import org.jetbrains.annotations.NotNull;
+
 public class MyDate {
     private static final int DAYS_COMMON_YEAR = 365;
     private static final int DAYS_LEAP_YEAR = 366;
@@ -7,28 +9,26 @@ public class MyDate {
                                                             "июль", "август", "сентябрь",
                                                             "октябрь", "ноябрь", "декабрь"};
     private static final int[] monthDays = new int[]{-1000, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-    private static final boolean[] yearsLeap = new boolean[1000000];
-    /* предпосчитываем високосность годов */
-    static {
-        for(int i = 1 ; i < yearsLeap.length ; i++) {
-            if(i % 400 == 0) {
-                yearsLeap[i] = true;
-            }
-            else if(i % 100 == 0) {
-                yearsLeap[i] = false;
-            }
-            else if(i % 4 == 0) {
-                yearsLeap[i] = true;
-            }
+
+    private boolean isLeap(int year) {
+        if(year <= 0){
+            throw new IllegalArgumentException();
         }
+        if(year % 400 == 0) {
+            return true;
+        }
+        else if(year % 100 == 0) {
+           return false;
+        }
+        else return year % 4 == 0;
     }
     /**
      * @param day день месяца (должен укладываться в месяц)
      * @param month [1-12]
-     * @param year [1-999999]
+     * @param year [> 0]
      * */
     MyDate(int day, int month, int year) {
-        if(year >= yearsLeap.length || month < 1 || month > 12 || day < 0 || day > monthDays[month]) {
+        if(year < 1 || month < 1 || month > 12 || day < 0 || day > monthDays[month]) {
             throw new IllegalArgumentException("Wrong date input");
         }
         this.days = toDays(day, month, year);
@@ -48,9 +48,6 @@ public class MyDate {
     public int getCurrMonth(){
         return currMonth;
     }
-    /**
-     * @return год [1-999999]
-     * */
     public int getCurrYear(){
         return currYear;
     }
@@ -58,7 +55,7 @@ public class MyDate {
      * @param b дата для которой нужно найти разницу
      * @return неотрицательное количество дней - модуль разности между датами
      * */
-    public int getDiffInDays(MyDate b){
+    public int getDiffInDays(@NotNull MyDate b){
         if(b.days > this.days) {
             return b.days - this.days;
         }
@@ -70,7 +67,7 @@ public class MyDate {
      * @param b дата для которой нужно найти разницу
      * @return дата == разность между двумя входными (поля так же неотрицательные)
      * */
-    public MyDate getDiff(MyDate b){
+    public MyDate getDiff(@NotNull MyDate b){
         MyDate res;
         if(b.days > days) {
             res = new MyDate(b.currDay - currDay, b.currMonth - currMonth, b.currYear - currYear);
@@ -98,14 +95,14 @@ public class MyDate {
     private int toDays(int day, int month, int year) {
         int allDays = 0;
         for(int i = 1 ; i < year ; i++) {
-            if(yearsLeap[i]) {
+            if(isLeap(i)) {
                 allDays ++;
             }
             allDays += 365;
         }
         for(int i = 1 ; i < month ; i++) {
             allDays += monthDays[i];
-            if(i == 2 && yearsLeap[year]) {
+            if(i == 2 && isLeap(year)) {
                 allDays++;
             }
         }
@@ -118,7 +115,7 @@ public class MyDate {
     private void setCurrFields(){
         int allDays = this.days;
         for(currYear = 1 ; ; currYear++) {
-            if(yearsLeap[currYear]) {
+            if(isLeap(currYear)) {
                 if(allDays >= DAYS_LEAP_YEAR) {
                     allDays -= DAYS_LEAP_YEAR;
                 }
@@ -136,7 +133,7 @@ public class MyDate {
             }
         }
         for(currMonth = 1 ;  ; currMonth++) {
-            if(currMonth == 2 && yearsLeap[currYear]) {
+            if(currMonth == 2 && isLeap(currYear)) {
                 if(allDays >= monthDays[currMonth] + 1){
                     allDays -= (monthDays[currMonth] + 1);
                 }
