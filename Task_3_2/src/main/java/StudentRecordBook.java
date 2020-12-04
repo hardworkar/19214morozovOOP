@@ -65,6 +65,10 @@ public class StudentRecordBook {
                 cnt ++;
             }
         }
+        if(cnt == 0){
+            /* случай когда оценок нет */
+            return 0.0;
+        }
         return avg / cnt;
     }
 

@@ -72,4 +72,10 @@ public class StudentRecordBookTest {
         myRecordBook.putQualifying((byte)5);
         assertTrue(myRecordBook.diplomaWithHonours());
     }
+
+    @Test
+    public void emptyMarkList() {
+        StudentRecordBook myRecordBook = new StudentRecordBook(3);
+        assertEquals(myRecordBook.averageMark(), 0.0, 0.000001);
+    }
 }
