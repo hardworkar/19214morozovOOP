@@ -1,0 +1,16 @@
+{
+  "records": [
+    {
+      "title": "Note2",
+      "text": "\"my text...\"",
+      "createdAt": "Dec 11, 2020, 11:33:56 PM"
+    }
+  ],
+  "name": "file.json",
+  "handlers": [
+    {},
+    {},
+    {},
+    {}
+  ]
+}
